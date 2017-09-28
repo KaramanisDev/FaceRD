@@ -1,0 +1,29 @@
+{
+    "name": "karamanisweb/facerd",
+    "description": "FaceRD is a Framework Agnostic PHP library that is used for Face Recognition & Detection using multiple api providers.",
+    "keywords": ["facerd", "face", "face recognition", "face detection", "drivers"],
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Ilias Karamanis",
+            "email": "karamanisweb@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "guzzlehttp/guzzle": "~6"
+    },
+    "autoload": {
+        "psr-4": {
+            "KaramanisWeb\\FaceRD\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KaramanisWeb\\FaceRD\\": "tests/"
+        }
+    }
+}
