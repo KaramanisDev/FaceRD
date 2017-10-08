@@ -28,7 +28,7 @@ abstract class AbstractGroup
     protected function mapGroup($data): FaceGroup
     {
         $data = $data instanceof Data ? $data->toArray() : $data;
-        return new FaceGroup(null, null, null, $data);
+        return new FaceGroup('', '', '', $data);
     }
 
     protected function mapGroups($data): array

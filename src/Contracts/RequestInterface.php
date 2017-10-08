@@ -11,7 +11,7 @@ interface RequestInterface
 
     public function setResource(string $resource): void;
 
-    public function setCredentials(array $credentials): void;
+    public function setCredentials(array $credentials, bool $headerAuth = false): void;
 
     public function sent(string $method, array $data = [], array $options = []): Response;
 

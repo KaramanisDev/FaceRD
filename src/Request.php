@@ -16,11 +16,10 @@ class Request implements RequestInterface
     protected $credentials;
     protected $lastResponse;
 
-    public function __construct(array $credentials = [], string $apiBase = '', string $resource = '')
+    public function __construct(string $apiBase = '', string $resource = '')
     {
         $this->apiBase = $apiBase;
         $this->resource = $resource;
-        $this->credentials = $credentials;
         $this->client = new Client([
             //'headers' => ['Accept' => 'application/json'],
             'http_errors' => false
@@ -37,14 +36,15 @@ class Request implements RequestInterface
         $this->resource = $resource;
     }
 
-    public function setCredentials(array $credentials): void
+    public function setCredentials(array $credentials, bool $headerAuth = false): void
     {
         $this->credentials = $credentials;
+        $this->credentials['header_auth'] = $headerAuth;
     }
 
     public function sent(string $method, array $data = [], array $options = []): Response
     {
-        $data = array_merge($this->credentials, $data);
+        $this->prepareCredentials($data, $options);
 
         $methodSplit = explode(':', $method);
         if (isset($methodSplit[1]) && $methodSplit[1] === 'multipart') {
@@ -90,6 +90,15 @@ class Request implements RequestInterface
             return true;
         }
         return false;
+    }
+
+    protected function prepareCredentials(array &$data, array &$options): void
+    {
+        if ($this->credentials['header_auth']) {
+            $options['headers'] = array_merge($this->credentials, $options['headers'] ?? []);
+        } else {
+            $data = array_merge($this->credentials, $data);
+        }
     }
 
     protected function prepareURL(): string

@@ -57,6 +57,11 @@ class Helpers
         return !is_array($value) ? [$value] : (array)$value;
     }
 
+    public static function arrayKeysExists(array $value, array $keys): bool
+    {
+        return !array_diff_key(array_flip($keys), $value);
+    }
+
     public static function stringArray(string $value, string $separator = ','): array
     {
         return explode($separator, $value);
