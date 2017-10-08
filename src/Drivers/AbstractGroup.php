@@ -7,6 +7,7 @@ use KaramanisWeb\FaceRD\Exceptions\failedRequest;
 use KaramanisWeb\FaceRD\Exceptions\notSupported;
 use KaramanisWeb\FaceRD\Models\Data;
 use KaramanisWeb\FaceRD\Models\FaceGroup;
+use KaramanisWeb\FaceRD\Utilities\Helpers;
 
 abstract class AbstractGroup
 {
@@ -55,7 +56,7 @@ abstract class AbstractGroup
     protected function mapGroup($data): FaceGroup
     {
         $data = $data instanceof Data ? $data->toArray() : $data;
-        return new FaceGroup('', '', '', $data);
+        return new FaceGroup(Helpers::getDriver($this), '', '', $data);
     }
 
     protected function mapGroups($data): array

@@ -47,7 +47,7 @@ class Request implements RequestInterface
 
         $methodSplit = explode(':', $method);
         if (isset($methodSplit[1])) {
-            switch($methodSplit[1]){
+            switch ($methodSplit[1]) {
                 case 'raw':
                     $options['body'] = $data[0];
                     break;

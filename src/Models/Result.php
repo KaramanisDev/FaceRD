@@ -7,6 +7,7 @@ class Result extends AbstractModel
     protected $driver;
     protected $token;
     protected $confidence;
+    protected $matches;
 
     public function __construct(string $driver, string $token, array $unmapped = [])
     {
@@ -18,5 +19,10 @@ class Result extends AbstractModel
     public function setConfidence($confidence)
     {
         $this->confidence = $confidence;
+    }
+
+    public function setMatches(array $matches)
+    {
+        $this->matches = $matches;
     }
 }

@@ -31,7 +31,8 @@ abstract class AbstractDriver
             throw new \InvalidArgumentException('The property $requiredCredentials must be an array ex: [\'api_key\', \'api_secret\']');
         }
         if (!Helpers::arrayKeysExists($credentials, $this->requiredCredentials)) {
-            throw new \InvalidArgumentException('The credentials must contain the following parameters: ' . Helpers::arrayString($this->requiredCredentials, ', ') . '.');
+            throw new \InvalidArgumentException('The credentials must contain the following parameters: ' . Helpers::arrayString($this->requiredCredentials,
+                    ', ') . '.');
         }
         $this->request = new Request($this->apiBase);
         $this->request->setCredentials($credentials, $this->headerAuth);
@@ -69,19 +70,19 @@ abstract class AbstractDriver
     protected function mapCompare($data): Result
     {
         $data = $data instanceof Data ? $data->toArray() : $data;
-        return new Result('', '', $data);
+        return new Result($this->driver, '', $data);
     }
 
     protected function mapRecognise($data): Result
     {
         $data = $data instanceof Data ? $data->toArray() : $data;
-        return new Result('', '', $data);
+        return new Result($this->driver, '', $data);
     }
 
     protected function mapFace($data): Face
     {
         $data = $data instanceof Data ? $data->toArray() : $data;
-        return new Face('', '', $data);
+        return new Face($this->driver, '', $data);
     }
 
     protected function mapFaces($data): array

@@ -13,6 +13,11 @@ abstract class AbstractModel
         }
     }
 
+    public function get(string $property)
+    {
+        return $this->{$property};
+    }
+
     public function toArray(): array
     {
         $objectArray = [];
