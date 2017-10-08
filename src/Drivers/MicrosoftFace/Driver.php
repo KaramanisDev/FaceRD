@@ -62,10 +62,12 @@ class Driver extends AbstractDriver implements DriverInterface
         }
 
         $this->request->setResource('findsimilars');
-        $this->request->sent('POST:json', [
-            'faceListId' => $group,
-            'faceId' => $input
-        ]);
+        $this->request->sent('POST:json', array_merge(
+            count($group) > 1 ? ['faceIds' => Helpers::stringArray($group)] : ['faceListId' => $group],
+            [
+                'faceId' => $input,
+                'mode' => $options['mode'] ?? 'matchFace',
+            ]));
         $data = $this->request->getData();
 
         $this->handleErrors($data);

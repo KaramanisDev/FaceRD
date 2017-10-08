@@ -62,8 +62,8 @@ class Helpers
         return !array_diff_key(array_flip($keys), $value);
     }
 
-    public static function stringArray(string $value, string $separator = ','): array
+    public static function stringArray($value, string $separator = ','): array
     {
-        return explode($separator, $value);
+        return is_array($value) ? $value : explode($separator, $value);
     }
 }
