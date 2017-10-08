@@ -11,7 +11,6 @@ class FaceGroup extends AbstractModel
     protected $name;
     protected $faces;
     protected $tags;
-    protected $unmapped;
 
     public function __construct(string $driver, string $token, string $name = null, array $unmapped = [])
     {

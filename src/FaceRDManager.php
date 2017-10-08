@@ -5,6 +5,7 @@ namespace KaramanisWeb\FaceRD;
 use KaramanisWeb\FaceRD\Contracts\DriverInterface;
 use KaramanisWeb\FaceRD\Contracts\GroupInterface;
 use KaramanisWeb\FaceRD\Exceptions\driverNotFound;
+use KaramanisWeb\FaceRD\Exceptions\notSupported;
 
 class FaceRDManager
 {
@@ -20,6 +21,16 @@ class FaceRDManager
         $this->driver = $this->findDriver($driver, $credentials);
     }
 
+    public function base(): DriverInterface
+    {
+        return $this->getDriver();
+    }
+
+    public function group(): GroupInterface
+    {
+        return $this->getDriver()->group();
+    }
+
     protected function findDriver(string $driver, array $credentials): DriverInterface
     {
         $driverClass = sprintf('KaramanisWeb\\FaceRD\\Drivers\\%s\\Driver', $driver);
@@ -27,11 +38,6 @@ class FaceRDManager
             throw new driverNotFound($driver . ' driver does not exist.');
         }
         return new $driverClass($credentials);
-    }
-
-    public function base(): DriverInterface
-    {
-        return $this->getDriver();
     }
 
     protected function getDriver(): DriverInterface
@@ -44,8 +50,11 @@ class FaceRDManager
         $this->driver = $this->findDriver($driver, $credentials);
     }
 
-    public function group(): GroupInterface
+    public function __call($method, $parameters)
     {
-        return $this->getDriver()->group();
+        if(!is_callable([$this->getDriver(),$method])){
+            throw new notSupported();
+        }
+        return $this->getDriver()->$method(...$parameters);
     }
 }

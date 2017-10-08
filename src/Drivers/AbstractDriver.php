@@ -3,9 +3,11 @@
 namespace KaramanisWeb\FaceRD\Drivers;
 
 use KaramanisWeb\FaceRD\Contracts\GroupInterface;
+use KaramanisWeb\FaceRD\Exceptions\failedRequest;
 use KaramanisWeb\FaceRD\Exceptions\notSupported;
 use KaramanisWeb\FaceRD\Models\Data;
 use KaramanisWeb\FaceRD\Models\Face;
+use KaramanisWeb\FaceRD\Models\Result;
 use KaramanisWeb\FaceRD\Request;
 
 abstract class AbstractDriver
@@ -15,6 +17,7 @@ abstract class AbstractDriver
     protected $credentials;
     protected $request;
     protected $requiredCredentials = [];
+    protected $headerAuth = false;
 
     public function __construct(array $credentials)
     {
@@ -28,7 +31,7 @@ abstract class AbstractDriver
             throw new \InvalidArgumentException('The property $requiredCredentials must be an array ex: [\'api_key\', \'api_secret\']');
         }
         $this->credentials = $credentials;
-        $this->request = new Request($credentials, $this->apiBase);
+        $this->request = new Request(array_merge(['header_auth' => $this->headerAuth],$credentials), $this->apiBase);
     }
 
     public function getRequiredCredentials(): array
@@ -45,29 +48,21 @@ abstract class AbstractDriver
         return new $groupClass($this->request);
     }
 
-    public function detect($input, array $options = []): array
+    protected function mapFace($data): Face
     {
-        throw new notSupported();
+        $data = $data instanceof Data ? $data->toArray() : $data;
+        return new Face(null, null, $data);
     }
 
-    public function compare($input1, $input2)
-    {
-        throw new notSupported();
-    }
-
-    public function recognise($input, string $group, bool $groupIsToken = false, array $options = [])
-    {
-        throw new notSupported();
-    }
-
-    public function mapFaces($data): array
+    protected function mapFaces($data): array
     {
         return $data instanceof Data ? $data->toArray() : $data;
     }
 
-    public function mapFace($data): Face
+    protected function handleErrors(Data $data): void
     {
-        $data = $data instanceof Data ? $data->toArray() : $data;
-        return new Face(null, null, $data);
+        if ($data->statusCode !== 200 && $data->statusCode !== 201) {
+            throw new failedRequest('Something went wrong!');
+        }
     }
 }

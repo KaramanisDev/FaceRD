@@ -65,11 +65,6 @@ class Request implements RequestInterface
         return $this->lastResponse = $this->client->request($methodSplit[0], $this->prepareURL(), $options);
     }
 
-    protected function prepareURL(): string
-    {
-        return rtrim($this->apiBase, '/') . '/' . ltrim($this->resource, '/');
-    }
-
     public function getData(): Data
     {
         return $this->bodyToData($this->lastResponse);
@@ -87,7 +82,6 @@ class Request implements RequestInterface
 
     public function hasResponseFailed(Response $response, bool $throwException = false): bool
     {
-        //REVIEW: this function later
         $statusCode = $response->getStatusCode();
         if ($statusCode !== 201 && $statusCode !== 200) {
             if ($throwException) {
@@ -96,5 +90,10 @@ class Request implements RequestInterface
             return true;
         }
         return false;
+    }
+
+    protected function prepareURL(): string
+    {
+        return rtrim($this->apiBase, '/') . '/' . ltrim($this->resource, '/');
     }
 }

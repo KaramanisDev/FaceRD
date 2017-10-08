@@ -8,7 +8,6 @@ class Face extends AbstractModel
     protected $token;
     protected $rectangle;
     protected $attributes;
-    protected $unmapped;
 
     public function __construct(string $driver, string $token, array $unmapped = [])
     {

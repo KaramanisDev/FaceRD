@@ -4,6 +4,8 @@ namespace KaramanisWeb\FaceRD\Models;
 
 abstract class AbstractModel
 {
+    protected $unmapped;
+
     public function setUnmapped(array $parameters)
     {
         foreach ($parameters as $key => $value) {
