@@ -25,7 +25,7 @@ class Driver extends AbstractDriver implements DriverInterface
         $this->request->sent('POST:multipart', [
             $type === InputEnum::TOKEN ? 'face_token' : 'image_' . $type => $input,
             'return_landmark' => $options['landmark'] ?? '0',
-            'return_attributes' => $options['attributes'] ?? 'none'
+            'return_attributes' => str_replace(' ', '', $options['attributes'] ?? 'none')
         ]);
         $data = $this->request->getData();
 
@@ -33,30 +33,30 @@ class Driver extends AbstractDriver implements DriverInterface
         return $this->mapFaces($data);
     }
 
-    public function compare($input1, $input2): Result
+    public function compare($input1, $input2, array $options = []): Result
     {
         $type1 = Helpers::getInputType($input1);
         $type2 = Helpers::getInputType($input2);
 
         $this->request->setResource('compare');
-        $this->request->sent('POST:multipart', [
+        $this->request->sent('POST:multipart', array_merge([
             $type1 === InputEnum::TOKEN ? 'face_token1' : 'image_' . $type1 . '1' => $input1,
             $type2 === InputEnum::TOKEN ? 'face_token2' : 'image_' . $type1 . '2' => $input2,
-        ]);
+        ], $options));
         $data = $this->request->getData();
 
         $this->handleErrors($data);
         return $this->mapCompare($data);
     }
 
-    public function recognise($input, string $group, bool $groupIsToken = false, array $options = []): Result
+    public function recognise($input, string $group, array $options = []): Result
     {
         $type = Helpers::getInputType($input);
 
         $this->request->setResource('search');
         $this->request->sent('POST:multipart', array_merge([
             $type === InputEnum::TOKEN ? 'face_token' : 'image_' . $type => $input,
-            $groupIsToken ? 'faceset_token' : 'outer_id' => $group,
+            'outer_id' => $group,
         ], $options));
         $data = $this->request->getData();
 
@@ -84,9 +84,10 @@ class Driver extends AbstractDriver implements DriverInterface
     {
         $face = new Face(Helpers::getDriver($this), $data['face_token']);
         $face->setAttributes($data['attributes'] ?? []);
+        $face->setLandmark($data['landmark'] ?? []);
         $rectangle = $data['face_rectangle'];
         $face->setRectangle($rectangle['left'], $rectangle['top'], $rectangle['width'], $rectangle['height']);
-        $face->setUnmapped(Helpers::arrayExcept($data, ['face_token', 'attributes', 'face_rectangle']));
+        $face->setUnmapped(Helpers::arrayExcept($data, ['face_token', 'attributes', 'face_rectangle', 'landmark']));
         return $face;
     }
 
@@ -101,7 +102,7 @@ class Driver extends AbstractDriver implements DriverInterface
 
     protected function handleErrors(Data $data): void
     {
-        if (($data->statusCode !== 200 && $data->statusCode !== 201) || isset($data->{'error_message'})) {
+        if (isset($data->{'error_message'}) || $this->failedDataStatus($data)) {
             throw new failedRequest($data->{'error_message'} ?? 'Something went wrong!');
         }
     }

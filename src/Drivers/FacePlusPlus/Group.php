@@ -5,9 +5,11 @@ namespace KaramanisWeb\FaceRD\Drivers\FacePlusPlus;
 use KaramanisWeb\FaceRD\Contracts\GroupInterface;
 use KaramanisWeb\FaceRD\Drivers\AbstractGroup;
 use KaramanisWeb\FaceRD\Exceptions\failedRequest;
+use KaramanisWeb\FaceRD\Exceptions\notSupported;
 use KaramanisWeb\FaceRD\Models\Data;
 use KaramanisWeb\FaceRD\Models\FaceGroup;
 use KaramanisWeb\FaceRD\Utilities\Helpers;
+use KaramanisWeb\FaceRD\Utilities\InputEnum;
 
 class Group extends AbstractGroup implements GroupInterface
 {
@@ -21,11 +23,11 @@ class Group extends AbstractGroup implements GroupInterface
         return $this->mapGroups($data);
     }
 
-    public function get($nameOrToken, bool $isToken = false, array $options = []): FaceGroup
+    public function get(string $group, array $options = []): FaceGroup
     {
         $this->request->setResource('faceset/getdetail');
         $this->request->sent('POST', array_merge([
-            $isToken ? 'faceset_token' : 'outer_id' => $nameOrToken,
+            'outer_id' => $group,
         ], $options));
         $data = $this->request->getData();
 
@@ -33,12 +35,12 @@ class Group extends AbstractGroup implements GroupInterface
         return $this->mapGroup($data->toArray());
     }
 
-    public function create(string $name, array $options = []): FaceGroup
+    public function create(string $group, array $options = []): FaceGroup
     {
         $this->request->setResource('faceset/create');
         $this->request->sent('POST', [
-            'display_name' => $name,
-            'outer_id' => $name,
+            'display_name' => $group,
+            'outer_id' => $group,
             'tags' => $options['tags'] ?? '',
         ]);
         $data = $this->request->getData();
@@ -47,13 +49,12 @@ class Group extends AbstractGroup implements GroupInterface
         return $this->mapGroup($data->toArray());
     }
 
-    public function update($nameOrToken, bool $isToken = false, array $data, array $options = []): FaceGroup
+    public function update(string $group, array $data, array $options = []): FaceGroup
     {
         $groupData = [
-            $isToken ? 'faceset_token' : 'outer_id' => $nameOrToken
+            'outer_id' => $group
         ];
         if (isset($data['name'])) {
-            $groupData['new_outer_id'] = $data['name'];
             $groupData['display_name'] = $data['name'];
         }
         if (isset($data['tags'])) {
@@ -68,11 +69,11 @@ class Group extends AbstractGroup implements GroupInterface
         return $this->mapGroup($results->toArray());
     }
 
-    public function delete($nameOrToken, bool $isToken = false, array $options = []): FaceGroup
+    public function delete(string $group, array $options = []): FaceGroup
     {
         $this->request->setResource('faceset/delete');
         $this->request->sent('POST', array_merge([
-            $isToken ? 'faceset_token' : 'outer_id' => $nameOrToken,
+            'outer_id' => $group,
         ], $options));
         $data = $this->request->getData();
 
@@ -80,26 +81,32 @@ class Group extends AbstractGroup implements GroupInterface
         return $this->mapGroup($data->toArray());
     }
 
-    public function addFace($nameOrToken, bool $isToken = false, $faceTokens)
+    public function addFace($input, string $group, array $options = [])
     {
+        if (Helpers::getInputType($input) !== InputEnum::TOKEN) {
+            throw new notSupported('Only face tokens are supported can be either one or multiple.');
+        }
         $this->request->setResource('faceset/addface');
-        $this->request->sent('POST', [
-            $isToken ? 'faceset_token' : 'outer_id' => $nameOrToken,
-            'face_tokens' => Helpers::arrayString($faceTokens)
-        ]);
+        $this->request->sent('POST', array_merge([
+            'outer_id' => $group,
+            'face_tokens' => Helpers::arrayString($input)
+        ], $options));
         $data = $this->request->getData();
 
         $this->handleErrors($data);
         return $this->mapGroup($data->toArray());
     }
 
-    public function removeFace($nameOrToken, bool $isToken = false, $faceTokens)
+    public function removeFace($input, string $group, array $options = [])
     {
+        if (Helpers::getInputType($input) !== InputEnum::TOKEN) {
+            throw new notSupported('Only face tokens are supported can be either one or multiple.');
+        }
         $this->request->setResource('faceset/removeface');
-        $this->request->sent('POST', [
-            $isToken ? 'faceset_token' : 'outer_id' => $nameOrToken,
-            'face_tokens' => Helpers::arrayString($faceTokens)
-        ]);
+        $this->request->sent('POST', array_merge([
+            'outer_id' => $group,
+            'face_tokens' => Helpers::arrayString($input)
+        ], $options));
         $data = $this->request->getData();
 
         $this->handleErrors($data);
@@ -108,12 +115,11 @@ class Group extends AbstractGroup implements GroupInterface
 
     protected function mapGroup($data): FaceGroup
     {
-        $group = new FaceGroup(Helpers::getDriver($this), $data['faceset_token']);
+        $group = new FaceGroup(Helpers::getDriver($this), $data['outer_id']);
         $group->setName($data['display_name'] ?? $data['outer_id']);
         $group->setTags($data['tags'] ?? null);
         $group->setFaces($data['face_tokens'] ?? null);
-        $group->setUnmapped(Helpers::arrayExcept($data,
-            ['faceset_token', 'outer_id', 'display_name', 'tags', 'face_tokens']));
+        $group->setUnmapped(Helpers::arrayExcept($data, ['outer_id', 'display_name', 'tags', 'face_tokens']));
         return $group;
     }
 
@@ -128,7 +134,7 @@ class Group extends AbstractGroup implements GroupInterface
 
     protected function handleErrors(Data $data): void
     {
-        if (($data->statusCode !== 200 && $data->statusCode !== 201) || isset($data->{'error_message'})) {
+        if (isset($data->{'error_message'}) || $this->failedDataStatus($data)) {
             throw new failedRequest($data->{'error_message'} ?? 'Something went wrong!');
         }
     }
