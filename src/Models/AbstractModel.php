@@ -15,7 +15,7 @@ abstract class AbstractModel
 
     public function toArray(): array
     {
-        return (array)$this;
+        return json_decode(json_encode($this), true);
     }
 
     public function toJson($opt = 0)

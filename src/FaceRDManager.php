@@ -5,7 +5,6 @@ namespace KaramanisWeb\FaceRD;
 use KaramanisWeb\FaceRD\Contracts\DriverInterface;
 use KaramanisWeb\FaceRD\Contracts\GroupInterface;
 use KaramanisWeb\FaceRD\Exceptions\driverNotFound;
-use KaramanisWeb\FaceRD\Exceptions\notSupported;
 
 class FaceRDManager
 {
@@ -48,13 +47,5 @@ class FaceRDManager
     protected function setDriver(string $driver, array $credentials): void
     {
         $this->driver = $this->findDriver($driver, $credentials);
-    }
-
-    public function __call($method, $parameters)
-    {
-        if(!is_callable([$this->getDriver(),$method])){
-            throw new notSupported();
-        }
-        return $this->getDriver()->$method(...$parameters);
     }
 }

@@ -10,7 +10,7 @@ interface DriverInterface
 
     public function detect($input, array $options = []): array;
 
-    public function compare($input1, $input2): Result;
+    public function compare($input1, $input2, array $options = []): Result;
 
     public function recognise($input, string $group, bool $groupIsToken = false, array $options = []): Result;
 }

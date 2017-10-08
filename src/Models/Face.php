@@ -8,6 +8,7 @@ class Face extends AbstractModel
     protected $token;
     protected $rectangle;
     protected $attributes;
+    protected $landmark;
 
     public function __construct(string $driver, string $token, array $unmapped = [])
     {
@@ -21,11 +22,16 @@ class Face extends AbstractModel
         $this->attributes = $attributes;
     }
 
-    public function setRectangle(int $x, int $y, int $width, int $height): void
+    public function setLandmark($landmark)
+    {
+        $this->landmark = $landmark;
+    }
+
+    public function setRectangle(int $left, int $top, int $width, int $height): void
     {
         $this->rectangle = [
-            'x' => $x,
-            'y' => $y,
+            'left' => $left,
+            'top' => $top,
             'width' => $width,
             'height' => $height,
         ];

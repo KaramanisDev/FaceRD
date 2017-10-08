@@ -21,7 +21,6 @@ class Request implements RequestInterface
         $this->apiBase = $apiBase;
         $this->resource = $resource;
         $this->client = new Client([
-            //'headers' => ['Accept' => 'application/json'],
             'http_errors' => false
         ]);
     }
@@ -47,15 +46,27 @@ class Request implements RequestInterface
         $this->prepareCredentials($data, $options);
 
         $methodSplit = explode(':', $method);
-        if (isset($methodSplit[1]) && $methodSplit[1] === 'multipart') {
-            $multipartData = [];
-            foreach ($data as $key => $value) {
-                $multipartData[] = [
-                    'name' => $key,
-                    'contents' => $value
-                ];
+        if (isset($methodSplit[1])) {
+            switch($methodSplit[1]){
+                case 'raw':
+                    $options['body'] = $data[0];
+                    break;
+                case 'multipart':
+                    $multipartData = [];
+                    foreach ($data as $key => $value) {
+                        $multipartData[] = [
+                            'name' => $key,
+                            'contents' => $value
+                        ];
+                    }
+                    $options['multipart'] = $multipartData;
+                    break;
+                case 'json':
+                    $options['body'] = json_encode($data);
+                    break;
+                default:
+                    throw new failedRequest('Invalid method type, choose between: raw, multipart & json.');
             }
-            $options['multipart'] = $multipartData;
         } elseif ($methodSplit[0] === 'GET') {
             $options['query'] = $data;
         } else {

@@ -37,6 +37,21 @@ abstract class AbstractDriver
         $this->request->setCredentials($credentials, $this->headerAuth);
     }
 
+    public function detect($input, array $options = []): array
+    {
+        throw new notSupported();
+    }
+
+    public function compare($input1, $input2, array $options = []): Result
+    {
+        throw new notSupported();
+    }
+
+    public function recognise($input, string $group, bool $groupIsToken = false, array $options = []): Result
+    {
+        throw new notSupported();
+    }
+
     public function getRequiredCredentials(): array
     {
         return $this->requiredCredentials;
@@ -76,8 +91,13 @@ abstract class AbstractDriver
 
     protected function handleErrors(Data $data): void
     {
-        if ($data->statusCode !== 200 && $data->statusCode !== 201) {
+        if ($this->failedDataStatus($data)) {
             throw new failedRequest('Something went wrong!');
         }
+    }
+
+    protected function failedDataStatus(Data $data): bool
+    {
+        return $data->statusCode !== 200 && $data->statusCode !== 201;
     }
 }
