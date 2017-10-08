@@ -15,11 +15,16 @@ abstract class AbstractModel
 
     public function toArray(): array
     {
-        return json_decode(json_encode($this), true);
+        $objectArray = [];
+        $variables = get_class_vars(get_class($this));
+        foreach ($variables as $key => $value) {
+            $objectArray[$key] = $this->{$key};
+        }
+        return array_merge($objectArray, json_decode(json_encode($this), true));
     }
 
     public function toJson($opt = 0)
     {
-        return json_encode($this, $opt);
+        return json_encode($this->toArray(), $opt);
     }
 }

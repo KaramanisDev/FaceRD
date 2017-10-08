@@ -47,7 +47,7 @@ abstract class AbstractDriver
         throw new notSupported();
     }
 
-    public function recognise($input, string $group, bool $groupIsToken = false, array $options = []): Result
+    public function recognise($input, string $group, array $options = []): Result
     {
         throw new notSupported();
     }

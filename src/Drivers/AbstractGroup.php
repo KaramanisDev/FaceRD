@@ -17,12 +17,39 @@ abstract class AbstractGroup
         $this->request = $request;
     }
 
-    public function __call($method, $parameters)
+    public function list(array $options = []): array
     {
-        if(!is_callable(['Group',$method])){
-            throw new notSupported();
-        }
-        return $this->$method(...$parameters);
+        throw new notSupported();
+    }
+
+    public function get(string $group, array $options = []): FaceGroup
+    {
+        throw new notSupported();
+    }
+
+    public function create(string $group, array $options = [])
+    {
+        throw new notSupported();
+    }
+
+    public function update(string $group, array $data, array $options = [])
+    {
+        throw new notSupported();
+    }
+
+    public function delete(string $group, array $options = [])
+    {
+        throw new notSupported();
+    }
+
+    public function addFace($input, string $group, array $options = [])
+    {
+        throw new notSupported();
+    }
+
+    public function removeFace($input, string $group, array $options = [])
+    {
+        throw new notSupported();
     }
 
     protected function mapGroup($data): FaceGroup
@@ -38,8 +65,13 @@ abstract class AbstractGroup
 
     protected function handleErrors(Data $data): void
     {
-        if ($data->statusCode !== 200 && $data->statusCode !== 201) {
+        if ($this->failedDataStatus($data)) {
             throw new failedRequest('Something went wrong!');
         }
+    }
+
+    protected function failedDataStatus(Data $data): bool
+    {
+        return $data->statusCode !== 200 && $data->statusCode !== 201;
     }
 }

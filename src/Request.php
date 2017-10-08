@@ -62,7 +62,7 @@ class Request implements RequestInterface
                     $options['multipart'] = $multipartData;
                     break;
                 case 'json':
-                    $options['body'] = json_encode($data);
+                    $options['json'] = $data;
                     break;
                 default:
                     throw new failedRequest('Invalid method type, choose between: raw, multipart & json.');
