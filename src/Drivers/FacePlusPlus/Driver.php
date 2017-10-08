@@ -61,20 +61,21 @@ class Driver extends AbstractDriver implements DriverInterface
         $data = $this->request->getData();
 
         $this->handleErrors($data);
-        return $this->mapRecognise($data);
+        return $this->mapRecognise($data->toArray());
     }
 
     protected function mapRecognise($data): Result
     {
-        $result = new Result(Helpers::getDriver($this), $data->{'results'}[0]['face_token']);
-        $result->setConfidence($data->{'results'}[0]['confidence']);
-        $result->setUnmapped($data->toArray());
+        $result = new Result($this->driver, uniqid('', true));
+        $result->setMatches($data['results']);
+        unset($data['results']);
+        $result->setUnmapped($data);
         return $result;
     }
 
     protected function mapCompare($data): Result
     {
-        $result = new Result(Helpers::getDriver($this), $data->{'request_id'});
+        $result = new Result($this->driver, $data->{'request_id'});
         $result->setConfidence($data->{'confidence'});
         $result->setUnmapped(Helpers::arrayExcept($data->toArray(), ['request_id', 'confidence']));
         return $result;
@@ -82,7 +83,7 @@ class Driver extends AbstractDriver implements DriverInterface
 
     protected function mapFace($data): Face
     {
-        $face = new Face(Helpers::getDriver($this), $data['face_token']);
+        $face = new Face($this->driver, $data['face_token']);
         $face->setAttributes($data['attributes'] ?? []);
         $face->setLandmark($data['landmark'] ?? []);
         $rectangle = $data['face_rectangle'];
