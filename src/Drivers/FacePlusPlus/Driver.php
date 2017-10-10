@@ -49,7 +49,7 @@ class Driver extends AbstractDriver implements DriverInterface
         return $this->mapCompare($data);
     }
 
-    public function recognise($input, string $group, array $options = []): Result
+    public function recognize($input, string $group, array $options = []): Result
     {
         $type = Helpers::getInputType($input);
 
@@ -61,10 +61,10 @@ class Driver extends AbstractDriver implements DriverInterface
         $data = $this->request->getData();
 
         $this->handleErrors($data);
-        return $this->mapRecognise($data->toArray());
+        return $this->mapRecognize($data->toArray());
     }
 
-    protected function mapRecognise($data): Result
+    protected function mapRecognize($data): Result
     {
         $result = new Result($this->driver, uniqid('', true));
         $result->setMatches($data['results']);

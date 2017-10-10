@@ -12,5 +12,5 @@ interface DriverInterface
 
     public function compare($input1, $input2, array $options = []): Result;
 
-    public function recognise($input, string $group, array $options = []): Result;
+    public function recognize($input, string $group, array $options = []): Result;
 }

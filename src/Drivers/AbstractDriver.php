@@ -48,7 +48,7 @@ abstract class AbstractDriver
         throw new notSupported();
     }
 
-    public function recognise($input, string $group, array $options = []): Result
+    public function recognize($input, string $group, array $options = []): Result
     {
         throw new notSupported();
     }
@@ -73,7 +73,7 @@ abstract class AbstractDriver
         return new Result($this->driver, '', $data);
     }
 
-    protected function mapRecognise($data): Result
+    protected function mapRecognize($data): Result
     {
         $data = $data instanceof Data ? $data->toArray() : $data;
         return new Result($this->driver, '', $data);
