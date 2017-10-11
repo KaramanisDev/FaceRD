@@ -29,7 +29,7 @@ class Helpers
         return InputEnum::TOKEN;
     }
 
-    public static function arrayPull(array &$value, string $variable): mixed
+    public static function arrayPull(array &$value, string $variable)
     {
         if (isset($value[$variable])) {
             $temp = $value[$variable];
