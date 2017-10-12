@@ -132,7 +132,7 @@ class Group extends AbstractGroup implements GroupInterface
         return $groups;
     }
 
-    protected function handleErrors(Data $data): void
+    protected function handleErrors(Data $data)
     {
         if (isset($data->{'error_message'}) || $this->failedDataStatus($data)) {
             throw new failedRequest($data->{'error_message'} ?? 'Something went wrong!');

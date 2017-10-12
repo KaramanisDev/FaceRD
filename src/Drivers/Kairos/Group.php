@@ -32,7 +32,7 @@ class Group extends AbstractGroup implements GroupInterface
         $data = $this->request->getData();
 
         $this->handleErrors($data);
-        $data->name = $group;
+        $data->{'name'} = $group;
         return $this->mapGroup($data->toArray());
     }
 
@@ -107,7 +107,7 @@ class Group extends AbstractGroup implements GroupInterface
         return $group;
     }
 
-    protected function handleErrors(Data $data): void
+    protected function handleErrors(Data $data)
     {
         if (isset($data->{'Errors'}) || $this->failedDataStatus($data)) {
             throw new failedRequest($data->{'Errors'}[0]['Message'] ?? 'Something went wrong!');

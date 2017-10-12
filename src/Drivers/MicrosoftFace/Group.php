@@ -48,6 +48,7 @@ class Group extends AbstractGroup implements GroupInterface
 
     public function update(string $group, array $data, array $options = []): bool
     {
+        $groupData = [];
         $groupData['name'] = $data['name'] ?? $group;
         if (isset($data['userData'])) {
             $groupData['userData'] = $data['userData'];
@@ -128,7 +129,7 @@ class Group extends AbstractGroup implements GroupInterface
         return $groups;
     }
 
-    protected function handleErrors(Data $data): void
+    protected function handleErrors(Data $data)
     {
         if (isset($data->{'error'}) || $this->failedDataStatus($data)) {
             throw new failedRequest($data->{'error'}['message'] ?? 'Something went wrong!');

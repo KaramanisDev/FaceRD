@@ -7,11 +7,11 @@ use KaramanisWeb\FaceRD\Models\Data;
 
 interface RequestInterface
 {
-    public function setApiBase(string $apiBase): void;
+    public function setApiBase(string $apiBase);
 
-    public function setResource(string $resource): void;
+    public function setResource(string $resource);
 
-    public function setCredentials(array $credentials, bool $headerAuth = false): void;
+    public function setCredentials(array $credentials, bool $headerAuth = false);
 
     public function sent(string $method, array $data = [], array $options = []): Response;
 

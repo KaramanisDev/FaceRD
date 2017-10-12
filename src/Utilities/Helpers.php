@@ -24,6 +24,7 @@ class Helpers
                 return InputEnum::BASE64;
             }
         } catch (\Exception $e) {
+            //Thee is no need to do anything here just continue to the final returned type
         }
 
         return InputEnum::TOKEN;

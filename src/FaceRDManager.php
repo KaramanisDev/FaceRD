@@ -15,7 +15,7 @@ class FaceRDManager
         $this->setDriver($driver, $credentials);
     }
 
-    public function configure(string $driver, array $credentials): void
+    public function configure(string $driver, array $credentials)
     {
         $this->driver = $this->findDriver($driver, $credentials);
     }
@@ -44,7 +44,7 @@ class FaceRDManager
         return $this->driver;
     }
 
-    protected function setDriver(string $driver, array $credentials): void
+    protected function setDriver(string $driver, array $credentials)
     {
         $this->driver = $this->findDriver($driver, $credentials);
     }

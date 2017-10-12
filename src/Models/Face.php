@@ -27,7 +27,7 @@ class Face extends AbstractModel
         $this->landmark = $landmark;
     }
 
-    public function setRectangle(int $left, int $top, int $width, int $height): void
+    public function setRectangle(int $left, int $top, int $width, int $height)
     {
         $this->rectangle = [
             'left' => $left,

@@ -8,28 +8,28 @@ use PHPUnit\Framework\TestCase;
 
 class HelpersTest extends TestCase
 {
-    public function test_get_input_type_returns_token(): void
+    public function test_get_input_type_returns_token()
     {
         $this->assertEquals(InputEnum::TOKEN, Helpers::getInputType('123demoTesting!'));
     }
 
-    public function test_get_input_type_returns_url(): void
+    public function test_get_input_type_returns_url()
     {
         $this->assertEquals(InputEnum::URL, Helpers::getInputType('http://www.website.com/image.png'));
     }
 
-    public function test_get_input_type_returns_base64(): void
+    public function test_get_input_type_returns_base64()
     {
         $this->assertEquals(InputEnum::BASE64,
             Helpers::getInputType('R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='));
     }
 
-    public function test_get_input_type_returns_file(): void
+    public function test_get_input_type_returns_file()
     {
         $this->assertEquals(InputEnum::FILE, Helpers::getInputType(fopen(__DIR__ . '/../files/image.jpg', 'r')));
     }
 
-    public function test_pulls_key_value_from_array_and_returns_it(): void
+    public function test_pulls_key_value_from_array_and_returns_it()
     {
         $array = [
             'name' => 'User',
@@ -48,7 +48,7 @@ class HelpersTest extends TestCase
         $this->assertEquals($expected, $array);
     }
 
-    public function test_removes_specified_keys_from_array_and_returns_array(): void
+    public function test_removes_specified_keys_from_array_and_returns_array()
     {
         $array = [
             'name' => 'User',
@@ -66,7 +66,7 @@ class HelpersTest extends TestCase
         $this->assertEquals($expected, $arrayReturned);
     }
 
-    public function test_converts_array_into_string_and_returns_it(): void
+    public function test_converts_array_into_string_and_returns_it()
     {
         $array = ['one', 'two', 'three'];
         $expected = 'one/two/three';
@@ -75,7 +75,7 @@ class HelpersTest extends TestCase
         $this->assertEquals($expected, $string);
     }
 
-    public function test_converts_string_or_array_into_array_and_returns_it(): void
+    public function test_converts_string_or_array_into_array_and_returns_it()
     {
         $string = 'word';
         $array = ['word'];
@@ -87,7 +87,7 @@ class HelpersTest extends TestCase
         $this->assertEquals($expected, $array2);
     }
 
-    public function test_if_keys_exists_into_an_array_returns_bool(): void
+    public function test_if_keys_exists_into_an_array_returns_bool()
     {
         $array = [
             'name' => 'User',
@@ -102,7 +102,7 @@ class HelpersTest extends TestCase
         $this->assertFalse($boolFalse);
     }
 
-    public function test_explodes_a_string_into_an_array_based_on_separator_and_returns_it(): void
+    public function test_explodes_a_string_into_an_array_based_on_separator_and_returns_it()
     {
         $string = 'one, two, three';
         $expected = ['one', 'two', 'three'];

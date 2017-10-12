@@ -64,7 +64,7 @@ abstract class AbstractGroup
         return $data instanceof Data ? $data->toArray() : $data;
     }
 
-    protected function handleErrors(Data $data): void
+    protected function handleErrors(Data $data)
     {
         if ($this->failedDataStatus($data)) {
             throw new failedRequest('Something went wrong!');

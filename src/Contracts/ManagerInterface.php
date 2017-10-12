@@ -4,7 +4,7 @@ namespace KaramanisWeb\FaceRD\Contracts;
 
 interface ManagerInterface
 {
-    public function configure(string $driver, array $credentials): void;
+    public function configure(string $driver, array $credentials);
 
     public function base(): DriverInterface;
 

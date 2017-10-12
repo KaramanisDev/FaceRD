@@ -89,7 +89,7 @@ class Driver extends AbstractDriver implements DriverInterface
         return $face;
     }
 
-    protected function handleErrors(Data $data): void
+    protected function handleErrors(Data $data)
     {
         if (isset($data->{'Errors'}) || $this->failedDataStatus($data)) {
             throw new failedRequest($data->{'Errors'}[0]['Message'] ?? 'Something went wrong!');

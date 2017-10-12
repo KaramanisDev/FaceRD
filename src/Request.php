@@ -25,17 +25,17 @@ class Request implements RequestInterface
         ]);
     }
 
-    public function setApiBase(string $apiBase): void
+    public function setApiBase(string $apiBase)
     {
         $this->apiBase = $apiBase;
     }
 
-    public function setResource(string $resource): void
+    public function setResource(string $resource)
     {
         $this->resource = $resource;
     }
 
-    public function setCredentials(array $credentials, bool $headerAuth = false): void
+    public function setCredentials(array $credentials, bool $headerAuth = false)
     {
         $this->credentials = $credentials;
         $this->credentials['header_auth'] = $headerAuth;
@@ -103,7 +103,7 @@ class Request implements RequestInterface
         return false;
     }
 
-    protected function prepareCredentials(array &$data, array &$options): void
+    protected function prepareCredentials(array &$data, array &$options)
     {
         if ($this->credentials['header_auth']) {
             $options['headers'] = array_merge($this->credentials, $options['headers'] ?? []);
